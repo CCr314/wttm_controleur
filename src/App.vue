@@ -1,21 +1,69 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
+    <img alt="Vue logo" class="logo" src="./assets/timeMachine.jpg" width="76" height="41" />
   </header>
-
+  <br>
+     {{info}}
+ <br>
   <main>
-    <TheWelcome />
+    <button v-on:click="action('prev')">Précédent</button>
+    <button v-on:click="action('next')">Suivant</button>
+  <br>
+     {{msg}}
   </main>
 </template>
+
+<script language="javascript">
+import axios from 'axios'
+export default {
+  data() {
+    return {
+      info: "",
+      msg:""
+    };
+  },
+  methods: {
+    refresh() {
+    axios
+      .get(import.meta.env.VITE_API_URL+"info")
+      .then(response => {
+        console.log(response.data);
+          this.info = response.data;
+          })
+      .catch(error => {
+           // handle error
+           console.log(error);
+           this.setMessage(error);
+      })
+   },
+   action(type) {
+    axios
+      .get(import.meta.env.VITE_API_URL + type)
+      .then(response => {
+        console.log(response.data);
+        this.setMessage(response.data);
+        this.refresh();
+          })
+      .catch(error => {
+       // handle error
+       console.log(error);
+       this.setMessage(type + " : " +  error);
+     })
+    },
+    setMessage(msg) {
+      this.msg = msg
+      setTimeout(() => this.msg="", 2000)
+    }
+  },
+  mounted () {
+  console.log(navigator.userAgent)
+    this.refresh()
+  },
+  created () {
+
+  }
+};
+</script>
 
 <style scoped>
 header {
@@ -27,21 +75,4 @@ header {
   margin: 0 auto 2rem;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
 </style>
