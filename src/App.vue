@@ -1,10 +1,8 @@
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/timeMachine.jpg" width="76" height="41" />
-  </header>
 
   <main>
     <div>
+      <img alt="Vue logo" class="logo" src="./assets/timeMachine.jpg" width="76" height="41" />
        {{info}}
        {{info.score}}
 
@@ -13,11 +11,17 @@
     <div>
       <button v-on:click="action('prev')">Précédent</button>
       <button v-on:click="action('next')">Suivant</button>
+      <button v-on:click="action('nextQuestion')">Question suiv</button>
+
     </div>
+    <div align="center">Equipes</div>
+    <div class="grid-container">
     <div v-for="equipe in equipes" >
-      <button v-on:click="action('setEquipe/' + equipe.key)">  {{ equipe }}</button>
+      <button v-on:click="action('setEquipe/' + equipe.key)" >  {{ equipe }}</button>
     </div>
-    <div><button v-on:click="action('ventillo/1/on')">Ventillo On</button><button v-on:click="action('ventillo/1/off')">Ventillo Off</button></div>
+    </div>
+        <div align="center">Actions</div>
+    <div><button v-on:click="action('ventilo/1/on')">Ventilo On</button><button v-on:click="action('ventilo/1/off')">Ventilo Off</button></div>
     <div><button v-on:click="action('voltmetre/on')">Voltmetre On</button><button v-on:click="action('voltmetre/off')">Voltmetre Off</button></div>
     <div><button v-on:click="action('convecteur/on')">Convecteur On</button><button v-on:click="action('convecteur/off')">Convecteur Off</button></div>
     <div><button v-on:click="action('neon/1/on')">Hello On</button><button v-on:click="action('neon/1/off')">Hello Off</button></div>
@@ -56,6 +60,7 @@ export default {
       })
    },
    action(type) {
+    console.log(import.meta.env.VITE_API_URL + type);
     axios
       .get(import.meta.env.VITE_API_URL + type)
       .then(response => {
@@ -98,4 +103,19 @@ header {
   bgcolor : white ;
 }
 
+button {
+  width: 120px;
+  height: 40px
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Crée 2 colonnes égales */
+  /*gap: 10px;  Espace entre les colonnes et lignes */
+}
+
+.grid-item {
+  border: 1px solid #ccc;
+  padding: 20px;
+}
 </style>
