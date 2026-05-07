@@ -2,10 +2,18 @@
 
   <main>
     <div>
-      <img alt="Vue logo" class="logo" src="./assets/timeMachine.jpg" width="76" height="41" />
-       {{info}}
-       {{info.score}}
-
+      <img alt="Vue logo" v-on:click="refresh()"  class="logo" src="./assets/timeMachine.jpg" width="76" height="41" />
+    </div>
+    <div>
+      Sequence: {{info.seq}}
+    </div>
+    <div>
+      Scores: {{info.score}}
+    </div>
+    <div>
+      <button v-on:click="action('modeAnnee')" :style="info.mode==0?'font-weight: bold':''">Capitaines</button>
+      <button v-on:click="action('modeQuiz')" :style="info.mode==1?'font-weight: bold':''">Quiz</button>
+      <button v-on:click="action('modeQuiz2026' )":style="info.mode==2?'font-weight: bold':''" >Quiz 2026</button>
 
     </div>
     <div>
@@ -16,8 +24,8 @@
     </div>
     <div align="center">Equipes</div>
     <div class="grid-container">
-    <div v-for="equipe in equipes" >
-      <button v-on:click="action('setEquipe/' + equipe.key)" >  {{ equipe }}</button>
+    <div v-for="(equipe,index) in equipes" >
+      <button v-on:click="action('setEquipe/' + index)" :style="info.equipe==index?'font-weight: bold':''">  {{ equipe }}</button>
     </div>
     </div>
         <div align="center">Actions</div>
@@ -39,7 +47,7 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      info: "",
+      info: {},
       equipes: ["1998","1965","1976","2011","1981","2000"],
       msg:""
     };
@@ -49,9 +57,8 @@ export default {
     axios
       .get(import.meta.env.VITE_API_URL+"info")
       .then(response => {
-        console.log(response.data);
-          this.info = response.data.json;
-          console.log(this.info.seq)
+          console.log(response);
+          this.info = response.data;
           })
       .catch(error => {
            // handle error
@@ -66,7 +73,7 @@ export default {
       .then(response => {
         console.log(response.data);
         this.setMessage(response.data);
-        this.refresh();
+        //this.refresh();
           })
       .catch(error => {
        // handle error
@@ -105,7 +112,14 @@ header {
 
 button {
   width: 120px;
-  height: 40px
+  height: 40px;
+}
+
+buttonGras {
+  width: 120px;
+  height: 40px;
+  font-weight: bold;
+  color : red;
 }
 
 .grid-container {
