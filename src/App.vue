@@ -5,27 +5,23 @@
       <img alt="Vue logo" v-on:click="refresh()"  class="logo" src="./assets/timeMachine.jpg" width="76" height="41" />
     </div>
     <div>
-      Sequence: {{info.seq}}
-    </div>
-    <div>
-      Scores: {{info.score}}
+      Sequence: {{info.seq}} - {{info.mode==0?sequence[info.seq]:sequenceQuiz[info.seq]}}
     </div>
     <div>
       <button v-on:click="action('modeAnnee')" :style="info.mode==0?'font-weight: bold':''">Capitaines</button>
       <button v-on:click="action('modeQuiz')" :style="info.mode==1?'font-weight: bold':''">Quiz</button>
-      <button v-on:click="action('modeQuiz2026' )":style="info.mode==2?'font-weight: bold':''" >Quiz 2026</button>
+      <button v-if="admin"  v-on:click="action('modeQuiz2026' )":style="info.mode==2?'font-weight: bold':''" >Quiz 2026</button>
 
     </div>
     <div>
       <button v-on:click="action('prev')">Précédent</button>
       <button v-on:click="action('next')">Suivant</button>
-      <button v-on:click="action('nextQuestion')">Question suiv</button>
 
     </div>
     <div align="center">Equipes</div>
     <div class="grid-container">
     <div v-for="(equipe,index) in equipes" >
-      <button v-on:click="action('setEquipe/' + index)" :style="info.equipe==index?'font-weight: bold':''">  {{ equipe }}</button>
+      <button v-on:click="action('setEquipe/' + index)" :style="info.equipe==index?'font-weight: bold':''">  {{ equipe }}</button>&nbsp;&nbsp;{{info.score[index]}}&nbsp;&nbsp;
     </div>
     </div>
         <div align="center">Actions</div>
@@ -48,17 +44,23 @@ export default {
   data() {
     return {
       info: {},
+      admin: false,
       equipes: ["1998","1965","1976","2011","1981","2000"],
+      sequence: ["Teasing","Intro","vidéo 1/3","vidéo 2/3","vidéo 3/3","intro Photo","Photo","choix Photo","intro choix année","Année","Impression","fin"],
+      sequenceQuiz: ["Teasing","Page d'intro","Demarrez","Question","Réponse OK","Fausse réponse","Score","fin","Photo","Impression","fin"],
       msg:""
     };
   },
   methods: {
     refresh() {
+    console.log("refresh")
     axios
       .get(import.meta.env.VITE_API_URL+"info")
       .then(response => {
           console.log(response);
           this.info = response.data;
+
+          console.log(this.info.score[0])
           })
       .catch(error => {
            // handle error
@@ -73,7 +75,7 @@ export default {
       .then(response => {
         console.log(response.data);
         this.setMessage(response.data);
-        //this.refresh();
+        setTimeout(() => this.refresh(),1000);
           })
       .catch(error => {
        // handle error
@@ -87,11 +89,13 @@ export default {
     }
   },
   mounted () {
-  console.log(navigator.userAgent)
-    this.refresh()
+    let urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.has('admin')) this.admin=true;
+    console.log(navigator.userAgent)
+
   },
   created () {
-
+    this.refresh()
   }
 };
 </script>
