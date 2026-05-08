@@ -5,6 +5,8 @@ import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
+const fs = require('fs')
+
 export default defineConfig({
   plugins: [
     vue(),
@@ -16,3 +18,5 @@ export default defineConfig({
     },
   },
 })
+
+
